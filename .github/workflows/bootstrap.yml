@@ -36,11 +36,12 @@ jobs:
                   archive.extractall(".")
           PY
 
-      - name: Commit project
+      - name: Commit source tree
         run: |
           git config user.name "mcdc bootstrap"
           git config user.email "mcdc@users.noreply.github.com"
-          git rm -r --ignore-unmatch .bootstrap .github/workflows/bootstrap.yml
+          git rm -r --ignore-unmatch .bootstrap
+          rm -f .github/workflows/ci.yml
           git add -A
           git commit -m "Add mcdc source, tests, and CI"
           git push
