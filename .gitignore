@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Generated decompiler output and local test files
+decompiled/
+_scratch/
+*.jar
+
+# mcdc output marker (inside generated folders)
+.mcdc-output
