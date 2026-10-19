@@ -1,0 +1,46 @@
+name: Bootstrap repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/bootstrap.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Unpack project
+        run: |
+          python - <<'PY'
+          import base64
+          import io
+          import tarfile
+          from pathlib import Path
+
+          parts = sorted(Path(".bootstrap").glob("part-*.b64"))
+          encoded = "".join(part.read_text(encoding="ascii").strip() for part in parts)
+          raw = base64.b64decode(encoded)
+          with tarfile.open(fileobj=io.BytesIO(raw), mode="r:xz") as archive:
+              try:
+                  archive.extractall(".", filter="data")
+              except TypeError:
+                  archive.extractall(".")
+          PY
+
+      - name: Commit project
+        run: |
+          git config user.name "mcdc bootstrap"
+          git config user.email "mcdc@users.noreply.github.com"
+          git rm -r --ignore-unmatch .bootstrap .github/workflows/bootstrap.yml
+          git add -A
+          git commit -m "Add mcdc source, tests, and CI"
+          git push
